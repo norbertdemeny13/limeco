@@ -312,7 +312,7 @@ footer{
       <p class="eyebrow">Lunca Mureșului · Alba</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://wa.me/40743690435" target="_blank" rel="noopener">Sună acum</a>
-        <a class="btn btn-ghost" href="https://m.me/61594676564166" target="_blank" rel="noopener">Mesaj Facebook</a>
+        <a class="btn btn-ghost js-fb-messenger" href="https://m.me/61594676564166" target="_blank" rel="noopener">Mesaj Facebook</a>
       </div>
     </div>
   </section>
@@ -408,11 +408,11 @@ footer{
             </li>
             <li>
               <small>Facebook</small>
-              <a href="https://www.facebook.com/profile.php?id=61594676564166" target="_blank" rel="noopener">Limeco pe Facebook</a>
+              <a class="js-fb-profile" href="https://www.facebook.com/profile.php?id=61594676564166" target="_blank" rel="noopener">Limeco pe Facebook</a>
             </li>
             <li>
               <small>Mesaj Facebook</small>
-              <a href="https://m.me/61594676564166" target="_blank" rel="noopener">Scrie-ne pe Messenger</a>
+              <a class="js-fb-messenger" href="https://m.me/61594676564166" target="_blank" rel="noopener">Scrie-ne pe Messenger</a>
             </li>
             <li>
               <small>Adresă</small>
@@ -511,6 +511,64 @@ if ('IntersectionObserver' in window) {
       window.history.replaceState({}, '', window.location.pathname + '#contact');
     }
   }
+})();
+
+(function () {
+  var FB_ID = '61594676564166';
+  var MSG_ID = '1315488838320363';
+  var ua = navigator.userAgent || '';
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+  function openWithFallback(appUrl, webUrl) {
+    var start = Date.now();
+    var hidden = false;
+    function onHide() { hidden = true; }
+    document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('pagehide', onHide);
+    window.location.href = appUrl;
+    setTimeout(function () {
+      document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('pagehide', onHide);
+      if (!hidden && Date.now() - start < 1600) {
+        window.location.href = webUrl;
+      }
+    }, 900);
+  }
+
+  function bind(selector, handler) {
+    document.querySelectorAll(selector).forEach(function (el) {
+      el.addEventListener('click', handler);
+    });
+  }
+
+  bind('.js-fb-profile', function (e) {
+    var web = 'https://www.facebook.com/profile.php?id=' + FB_ID;
+    if (isAndroid) {
+      e.preventDefault();
+      window.location.href =
+        'intent://profile/' + FB_ID +
+        '#Intent;scheme=fb;package=com.facebook.katana;S.browser_fallback_url=' +
+        encodeURIComponent(web) + ';end';
+    } else if (isIOS) {
+      e.preventDefault();
+      openWithFallback('fb://profile/' + FB_ID, web);
+    }
+  });
+
+  bind('.js-fb-messenger', function (e) {
+    var web = 'https://m.me/' + FB_ID;
+    if (isAndroid) {
+      e.preventDefault();
+      window.location.href =
+        'intent://user/' + MSG_ID +
+        '/#Intent;scheme=fb-messenger;package=com.facebook.orca;S.browser_fallback_url=' +
+        encodeURIComponent(web) + ';end';
+    } else if (isIOS) {
+      e.preventDefault();
+      openWithFallback('fb-messenger://user-thread/' + MSG_ID, web);
+    }
+  });
 })();
 </script>
 </body>
