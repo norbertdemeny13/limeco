@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Limeco Service Auto & Vulcanizare — montaj anvelope, echilibrare, TPMS și service auto rapid în Lunca Mureșului.">
+<title>Limeco Service Auto & Vulcanizare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0a;
+  --bg-2:#121612;
+  --surface:#161b16;
+  --text:#f2f5f0;
+  --muted:#9aa69a;
+  --lime:#b6f000;
+  --lime-deep:#8bc000;
+  --line:rgba(182,240,0,.18);
+  --asphalt:#1a1f1a;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Manrope",system-ui,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:var(--safe-bottom);
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{width:min(1120px,calc(100% - 2.5rem));margin-inline:auto}
+.eyebrow{
+  font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--lime);font-weight:700;margin:0 0 .75rem;
+}
+h1,h2,h3{font-family:"Bebas Neue",sans-serif;letter-spacing:.02em;margin:0;line-height:1.05;font-weight:400}
+h1{font-size:clamp(3.4rem,10vw,6.4rem)}
+h2{font-size:clamp(2.4rem,6vw,3.6rem);margin-bottom:.75rem}
+h3{font-size:1.55rem;margin-bottom:.35rem}
+p{margin:0 0 1rem;color:var(--muted)}
+.lead{font-size:1.08rem;max-width:34rem}
+
+/* Nav */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:40;
+  padding:calc(.85rem + var(--safe-top)) 0 .85rem;
+  background:linear-gradient(to bottom,rgba(10,12,10,.92),rgba(10,12,10,.55) 70%,transparent);
+  backdrop-filter:saturate(120%) blur(8px);
+  transition:background .3s ease;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{
+  display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;
+}
+.brand-mark{
+  width:42px;height:42px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--lime);
+}
+.brand-word{
+  font-family:"Bebas Neue",sans-serif;font-size:1.55rem;letter-spacing:.04em;line-height:1;
+}
+.brand-word span{
+  display:inline-block;background:var(--lime);color:#0a0c0a;
+  padding:.05em .22em .02em;margin-right:.12em;
+}
+.nav-links{display:flex;align-items:center;gap:1.4rem;list-style:none;margin:0;padding:0}
+.nav-links a{
+  text-decoration:none;font-size:.92rem;font-weight:600;color:var(--text);
+  opacity:.85;transition:opacity .2s ease,color .2s ease;
+}
+.nav-links a:hover{opacity:1;color:var(--lime)}
+.nav-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--lime);color:#0a0c0a!important;opacity:1!important;
+  padding:.55rem 1rem;border-radius:4px;font-weight:700!important;
+  transition:transform .2s ease,background .2s ease!important;
+}
+.nav-cta:hover{background:var(--lime-deep);transform:translateY(-1px)}
+.menu-btn{
+  display:none;background:transparent;border:1px solid var(--line);
+  color:var(--text);width:44px;height:44px;border-radius:4px;cursor:pointer;
+}
+@media (max-width:760px){
+  .menu-btn{display:inline-grid;place-items:center}
+  .nav-links{
+    position:fixed;inset:calc(4.2rem + var(--safe-top)) 1rem auto;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--bg-2);border:1px solid var(--line);border-radius:10px;
+    padding:.5rem;display:none;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:.85rem 1rem;border-radius:6px}
+  .nav-links a:hover{background:rgba(182,240,0,.08)}
+  .nav-cta{text-align:center}
+}
+
+/* Hero */
+.hero{
+  position:relative;min-height:100svh;display:grid;align-items:end;
+  overflow:hidden;isolation:isolate;
+}
+.hero-media{
+  position:absolute;inset:0;z-index:-2;
+  background:#050705 center/cover no-repeat;
+  transform:scale(1.08);
+  transition:transform 2.4s cubic-bezier(.2,.7,.2,1);
+}
+body.ready .hero-media{transform:scale(1)}
+.hero-media::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,rgba(5,7,5,.92) 0%,rgba(5,7,5,.55) 48%,rgba(5,7,5,.25) 100%),
+    linear-gradient(180deg,rgba(5,7,5,.35) 0%,rgba(5,7,5,.15) 40%,rgba(5,7,5,.88) 100%);
+}
+.hero-grain{
+  position:absolute;inset:0;z-index:-1;opacity:.18;pointer-events:none;
+  background-image:radial-gradient(rgba(182,240,0,.35) 0.5px, transparent 0.5px);
+  background-size:3px 3px;mix-blend-mode:screen;
+}
+.hero-content{
+  padding:8rem 0 4.5rem;
+  opacity:0;transform:translateY(28px);
+  transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1);
+}
+body.ready .hero-content{opacity:1;transform:none}
+.hero h1{
+  max-width:12ch;margin-bottom:1rem;
+  text-shadow:0 8px 40px rgba(0,0,0,.55);
+}
+.hero h1 em{
+  font-style:normal;color:var(--lime);
+}
+.hero .lead{color:#d7ddd4;margin-bottom:1.75rem}
+.cta-row{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  min-height:48px;padding:.85rem 1.35rem;border-radius:4px;
+  font:inherit;font-weight:700;text-decoration:none;border:0;cursor:pointer;
+  transition:transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--lime);color:#0a0c0a}
+.btn-primary:hover{background:var(--lime-deep)}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid rgba(242,245,240,.35);
+}
+.btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+
+/* Sections */
+section{padding:5.5rem 0}
+.section-head{max-width:36rem;margin-bottom:2.5rem}
+.reveal{
+  opacity:0;transform:translateY(22px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.reveal.in{opacity:1;transform:none}
+
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;
+}
+@media (max-width:860px){.services-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.services-grid{grid-template-columns:1fr}}
+.service{
+  padding:1.4rem 0 1.1rem;
+  border-top:2px solid var(--lime);
+}
+.service p{margin:0;font-size:.95rem}
+.service-ico{
+  width:42px;height:42px;margin-bottom:.9rem;color:var(--lime);
+}
+.service-ico svg{width:100%;height:100%}
+
+.about{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:2.5rem;align-items:center;
+}
+@media (max-width:860px){.about{grid-template-columns:1fr}}
+.about-photo{
+  position:relative;min-height:360px;overflow:hidden;
+  border-radius:2px;
+}
+.about-photo img{
+  width:100%;height:100%;object-fit:cover;min-height:360px;
+  transition:transform 1.2s ease;
+}
+.about-photo:hover img{transform:scale(1.03)}
+.about-photo::before{
+  content:"";position:absolute;inset:auto 0 0 0;height:35%;z-index:1;
+  background:linear-gradient(transparent,rgba(10,12,10,.75));
+}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
+  margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--line);
+}
+.stat strong{
+  display:block;font-family:"Bebas Neue",sans-serif;
+  font-size:2rem;color:var(--lime);line-height:1;
+}
+.stat span{font-size:.85rem;color:var(--muted)}
+
+.contact-block{
+  display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;
+  background:
+    radial-gradient(circle at 10% 20%,rgba(182,240,0,.08),transparent 40%),
+    var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:clamp(1.5rem,4vw,2.75rem);
+}
+@media (max-width:800px){.contact-block{grid-template-columns:1fr}}
+.contact-list{list-style:none;margin:1.25rem 0 0;padding:0;display:grid;gap:1rem}
+.contact-list a,.contact-list span{
+  display:block;text-decoration:none;font-weight:600;color:var(--text);
+}
+.contact-list a:hover{color:var(--lime)}
+.contact-list small{display:block;font-weight:500;color:var(--muted);font-size:.85rem;margin-bottom:.15rem}
+form{display:grid;gap:.75rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
+label span{display:block;font-size:.82rem;font-weight:600;margin-bottom:.35rem;color:var(--muted)}
+input,textarea{
+  width:100%;font:inherit;color:var(--text);background:var(--asphalt);
+  border:1px solid rgba(242,245,240,.12);border-radius:4px;padding:.8rem .9rem;
+}
+textarea{min-height:7.5rem;resize:vertical}
+input:focus,textarea:focus,button:focus-visible,a:focus-visible{
+  outline:2px solid var(--lime);outline-offset:2px;
+}
+.sent{
+  display:none;padding:.85rem 1rem;border:1px solid var(--line);
+  background:rgba(182,240,0,.08);color:var(--text);border-radius:4px;
+}
+.sent.show{display:block;animation:pop .4s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.map-note{
+  margin-top:1.5rem;font-size:.92rem;color:var(--muted);
+}
+.map-note a{color:var(--lime);font-weight:700;text-decoration:none}
+.map-note a:hover{text-decoration:underline}
+
+footer{
+  padding:2rem 0 calc(2rem + var(--safe-bottom));
+  border-top:1px solid var(--line);
+}
+.footer-inner{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
+  align-items:center;color:var(--muted);font-size:.9rem;
+}
+.footer-inner strong{color:var(--text)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero-media,.hero-content,.reveal,.about-photo img,.btn,.nav-cta{transition:none!important;transform:none!important}
+  body.ready .hero-content,.reveal{opacity:1}
+  .sent.show{animation:none}
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Limeco — acasă">
+      <img class="brand-mark" src="logo-circle.jpg" alt="Logo Limeco">
+      <div class="brand-word"><span>lime</span>co.</div>
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Deschide meniul">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="#servicii">Servicii</a></li>
+      <li><a href="#despre">Despre</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a class="nav-cta" href="https://wa.me/40743690435" target="_blank" rel="noopener">0743 690 435</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-media" style="background-image:url('brand-banner.jpg?v=2')" role="img" aria-label="Limeco Service Auto și Vulcanizare"></div>
+    <div class="hero-grain" aria-hidden="true"></div>
+    <div class="wrap hero-content">
+      <p class="eyebrow">Lunca Mureșului · Alba</p>
+      <h1>Service auto <em>&amp;</em> vulcanizare</h1>
+      <p class="lead">Rapid, profesionist, la prețuri corecte — montaj anvelope, echilibrare și service pentru mașina ta.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://wa.me/40743690435" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-ghost" href="tel:+40743690435">Sună acum</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicii">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Ce facem</p>
+        <h2>Servicii complete pentru anvelope și auto</h2>
+        <p>Echipamente moderne, intervenții rapide și atenție la detalii — ca să pleci în siguranță de pe loc.</p>
+      </div>
+      <div class="services-grid">
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="14"/><circle cx="24" cy="24" r="5"/><path d="M24 4v6M24 38v6M4 24h6M38 24h6"/></svg>
+          </div>
+          <h3>Montaj anvelope</h3>
+          <p>Schimb sezonier, montaj și demontaj pe jante, pentru autoturisme și utilitare ușoare.</p>
+        </article>
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="16"/><path d="M24 12v12l8 4"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg>
+          </div>
+          <h3>Echilibrare roți</h3>
+          <p>Echilibrare precisă pe utilaje profesionale — elimină vibrațiile și protejează suspensia.</p>
+        </article>
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 34h16l3-10H13l3 10z"/><path d="M18 24V16a6 6 0 0 1 12 0v8"/><circle cx="24" cy="20" r="2"/></svg>
+          </div>
+          <h3>Ventile TPMS</h3>
+          <p>Verificare, înlocuire și resetare senzori de presiune pentru avertizări corecte la bord.</p>
+        </article>
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><rect x="10" y="14" width="28" height="22" rx="2"/><path d="M16 14V10h16v4M18 22h12M18 28h8"/></svg>
+          </div>
+          <h3>Depozitare anvelope</h3>
+          <p>Păstrăm anvelopele de sezon în condiții potrivite, ca să ai loc liber și cauciucuri gata la schimb.</p>
+        </article>
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 32l6-16h8l6 16"/><path d="M12 32h24"/><circle cx="18" cy="36" r="3"/><circle cx="30" cy="36" r="3"/></svg>
+          </div>
+          <h3>Vulcanizare</h3>
+          <p>Reparații rapide pentru pană și deteriorări uzuale — te punem din nou pe drum.</p>
+        </article>
+        <article class="service reveal">
+          <div class="service-ico" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 34l-6 6M28 14l6-6"/><path d="M16 18l14 14"/><circle cx="30" cy="18" r="8"/><path d="M12 36c4 0 6-2 6-6"/></svg>
+          </div>
+          <h3>Service auto rapid</h3>
+          <p>Intervenții de service pentru întreținerea curentă, cu atenție la siguranță și timp.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="despre">
+    <div class="wrap about">
+      <div class="about-photo reveal">
+        <img src="workshop.jpg" alt="Atelier Limeco — utilaje de montaj și echilibrare anvelope" width="1200" height="800" loading="lazy">
+      </div>
+      <div class="reveal">
+        <p class="eyebrow">Atelierul nostru</p>
+        <h2>Echipamente profesionale, rezultat curat</h2>
+        <p>Lucrăm cu utilaje moderne de montaj și echilibrare, într-un spațiu pregătit pentru intervenții rapide și ordonate. Prioritatea noastră: să pleci în siguranță, fără așteptări inutile.</p>
+        <p>Suntem în Lunca Mureșului — ușor de ajuns, ușor de programat.</p>
+        <div class="stats">
+          <div class="stat"><strong>Rapid</strong><span>intervenții pe loc</span></div>
+          <div class="stat"><strong>Precis</strong><span>echilibrare corectă</span></div>
+          <div class="stat"><strong>Corect</strong><span>prețuri transparente</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-block">
+        <div class="reveal">
+          <p class="eyebrow">Contact</p>
+          <h2>Hai să programăm</h2>
+          <p>Scrie-ne pe WhatsApp, sună-ne sau lasă un mesaj — îți răspundem cât putem de repede.</p>
+          <ul class="contact-list">
+            <li>
+              <small>WhatsApp</small>
+              <a href="https://wa.me/40743690435" target="_blank" rel="noopener">0743 690 435</a>
+            </li>
+            <li>
+              <small>Telefon</small>
+              <a href="tel:+40743690435">0743 690 435</a>
+            </li>
+            <li>
+              <small>Email</small>
+              <a href="mailto:mark.limeco@gmail.com">mark.limeco@gmail.com</a>
+            </li>
+            <li>
+              <small>Adresă</small>
+              <a href="https://maps.app.goo.gl/A36phLS3wEjMUAt37" target="_blank" rel="noopener">Drumul Țării 543, Lunca Mureșului, 517405</a>
+            </li>
+          </ul>
+          <p class="map-note">Deschide locația pe <a href="https://maps.app.goo.gl/A36phLS3wEjMUAt37" target="_blank" rel="noopener">Google Maps</a>.</p>
+        </div>
+
+        <form id="contact-form" class="reveal" novalidate>
+          <div class="row">
+            <label>
+              <span>Nume</span>
+              <input name="name" autocomplete="name" required placeholder="Numele tău">
+            </label>
+            <label>
+              <span>Telefon</span>
+              <input name="phone" type="tel" autocomplete="tel" required placeholder="07xx xxx xxx">
+            </label>
+          </div>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autocomplete="email" placeholder="opțional">
+          </label>
+          <label>
+            <span>Mesaj</span>
+            <textarea name="message" required placeholder="Ex: schimb anvelope vară/iarnă, echilibrare, pană..."></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Trimite mesajul</button>
+          <div class="sent" id="sent" role="status">Mulțumim! Te contactăm în curând.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div><strong>Limeco Service Auto &amp; Vulcanizare</strong><br>Lunca Mureșului, România</div>
+    <div>© <span id="year"></span> Limeco. Toate drepturile rezervate.</div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+window.addEventListener('load', function () {
+  document.body.classList.add('ready');
+});
+setTimeout(function () {
+  document.body.classList.add('ready');
+}, 1200);
+
+var menuBtn = document.querySelector('.menu-btn');
+var navLinks = document.getElementById('nav-menu');
+menuBtn.addEventListener('click', function () {
+  var open = navLinks.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+navLinks.querySelectorAll('a').forEach(function (link) {
+  link.addEventListener('click', function () {
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  });
+});
+
+var items = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.14 });
+  items.forEach(function (el) { io.observe(el); });
+} else {
+  items.forEach(function (el) { el.classList.add('in'); });
+}
+
+document.getElementById('contact-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var form = this;
+  var data = new FormData(form);
+  var name = (data.get('name') || '').toString().trim();
+  var phone = (data.get('phone') || '').toString().trim();
+  var email = (data.get('email') || '').toString().trim();
+  var message = (data.get('message') || '').toString().trim();
+  var subject = encodeURIComponent('Programare Limeco — ' + name);
+  var body = encodeURIComponent(
+    'Nume: ' + name + '\n' +
+    'Telefon: ' + phone + '\n' +
+    'Email: ' + email + '\n\n' +
+    message
+  );
+  window.location.href = 'mailto:mark.limeco@gmail.com?subject=' + subject + '&body=' + body;
+  var sent = document.getElementById('sent');
+  sent.classList.remove('show');
+  void sent.offsetWidth;
+  sent.classList.add('show');
+  form.reset();
+});
+</script>
+</body>
+</html>
