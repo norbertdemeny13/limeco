@@ -341,11 +341,81 @@ footer{
 }
 .footer-inner strong{color:var(--text)}
 
+/* AI assistant */
+.agent-toggle{
+  position:fixed;right:1.1rem;bottom:calc(1.1rem + var(--safe-bottom));z-index:50;
+  width:58px;height:58px;padding:0;border:2px solid var(--lime);border-radius:50%;cursor:pointer;
+  background:#000;box-shadow:0 10px 30px rgba(182,240,0,.28);
+  display:grid;place-items:center;overflow:hidden;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.agent-toggle:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(182,240,0,.38)}
+.agent-toggle img{width:100%;height:100%;object-fit:cover;display:block}
+.agent-toggle[aria-expanded="true"]{border-color:var(--text);box-shadow:none}
+.agent-panel{
+  position:fixed;right:1.1rem;bottom:calc(5.1rem + var(--safe-bottom));z-index:50;
+  width:min(380px,calc(100vw - 1.5rem));
+  height:min(520px,calc(100svh - 7.5rem));
+  display:none;flex-direction:column;overflow:hidden;
+  background:#0b0b0b;border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 20px 50px rgba(0,0,0,.55);
+}
+.agent-panel.open{display:flex}
+.agent-head{
+  display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+  padding:.95rem 1rem;border-bottom:1px solid var(--line);background:#050505;
+}
+.agent-brand{display:flex;align-items:center;gap:.7rem;min-width:0}
+.agent-brand img{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;
+  border:1px solid var(--lime);flex:0 0 auto;
+}
+.agent-head h2{font-size:1.35rem;margin:0;letter-spacing:.03em}
+.agent-head p{margin:0;font-size:.78rem;color:var(--muted)}
+.agent-close{
+  width:36px;height:36px;border-radius:8px;border:1px solid var(--line);
+  background:transparent;color:var(--text);cursor:pointer;
+}
+.agent-msgs{
+  flex:1;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.7rem;
+  scroll-behavior:smooth;
+}
+.agent-bubble{
+  max-width:88%;padding:.7rem .85rem;border-radius:12px;font-size:.92rem;line-height:1.45;
+}
+.agent-bubble.bot{
+  align-self:flex-start;background:#151515;border:1px solid rgba(182,240,0,.12);color:#e8eee6;
+}
+.agent-bubble.user{
+  align-self:flex-end;background:rgba(182,240,0,.14);border:1px solid rgba(182,240,0,.28);color:#f4ffe0;
+}
+.agent-bubble a{color:var(--lime);font-weight:700}
+.agent-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 1rem .75rem}
+.agent-suggestions button{
+  font:inherit;font-size:.78rem;font-weight:600;color:var(--text);
+  background:transparent;border:1px solid var(--line);border-radius:999px;
+  padding:.35rem .7rem;cursor:pointer;
+}
+.agent-suggestions button:hover{border-color:var(--lime);color:var(--lime)}
+.agent-form{
+  display:flex;gap:.5rem;padding:.75rem;border-top:1px solid var(--line);background:#050505;
+}
+.agent-form input{
+  flex:1;min-width:0;margin:0;border-radius:10px;padding:.7rem .8rem;
+}
+.agent-form button{
+  flex:0 0 auto;border:0;border-radius:10px;background:var(--lime);color:#000;
+  font:inherit;font-weight:700;padding:0 .95rem;cursor:pointer;
+}
+.agent-form button:hover{background:var(--lime-deep)}
+.agent-typing{align-self:flex-start;color:var(--muted);font-size:.82rem;padding:0 .2rem}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .hero-banner img,.hero-content,.reveal,.about-photo img,.btn,.nav-cta{transition:none!important;transform:none!important}
+  .hero-banner img,.hero-content,.reveal,.about-photo img,.btn,.nav-cta,.agent-toggle{transition:none!important;transform:none!important}
   body.ready .hero-content,.reveal{opacity:1}
   .sent.show{animation:none}
+  .agent-msgs{scroll-behavior:auto}
 }
 </style>
 </head>
@@ -537,6 +607,29 @@ footer{
   </div>
 </footer>
 
+<button class="agent-toggle" id="agent-toggle" type="button" aria-expanded="false" aria-controls="agent-panel" aria-label="Deschide asistentul auto Limeco">
+  <img src="logo-circle.jpg" alt="" width="58" height="58">
+</button>
+<div class="agent-panel" id="agent-panel" role="dialog" aria-label="Asistent auto Limeco" aria-modal="false" hidden>
+  <div class="agent-head">
+    <div class="agent-brand">
+      <img src="logo-circle.jpg" alt="Logo Limeco" width="40" height="40">
+      <div>
+        <h2>Asistent Limeco</h2>
+        <p>Întrebări de bază despre mașină &amp; anvelope</p>
+      </div>
+    </div>
+    <button class="agent-close" id="agent-close" type="button" aria-label="Închide asistentul">✕</button>
+  </div>
+  <div class="agent-msgs" id="agent-msgs" aria-live="polite"></div>
+  <div class="agent-suggestions" id="agent-suggestions"></div>
+  <form class="agent-form" id="agent-form">
+    <label class="sr" for="agent-input">Întrebarea ta</label>
+    <input id="agent-input" name="q" autocomplete="off" placeholder="Ex: când schimb pe iarnă?">
+    <button type="submit">Trimite</button>
+  </form>
+</div>
+
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -645,6 +738,205 @@ if ('IntersectionObserver' in window) {
       openWithFallback('fb-messenger://user-thread/' + MSG_ID, web);
     }
   });
+})();
+
+(function () {
+  var toggle = document.getElementById('agent-toggle');
+  var panel = document.getElementById('agent-panel');
+  var closeBtn = document.getElementById('agent-close');
+  var msgs = document.getElementById('agent-msgs');
+  var form = document.getElementById('agent-form');
+  var input = document.getElementById('agent-input');
+  var suggestions = document.getElementById('agent-suggestions');
+  if (!toggle || !panel || !msgs || !form || !input) return;
+
+  var knowledge = [
+    {
+      keys: ['salut', 'buna', 'bună', 'hello', 'hey', 'servus', 'ciao'],
+      answer: 'Salut! Sunt asistentul Limeco. Pot răspunde la întrebări de bază despre anvelope, vulcanizare și service. Cu ce te ajut?'
+    },
+    {
+      keys: ['program', 'deschis', 'ora', 'orar', 'cand lucrati', 'când lucrați'],
+      answer: 'Cel mai sigur e să ne scrii sau să ne suni pentru programare. Telefon / WhatsApp: <a href="https://wa.me/40743690435" target="_blank" rel="noopener">0743 690 435</a>.'
+    },
+    {
+      keys: ['adresa', 'adresă', 'unde sunteti', 'unde sunteți', 'locatie', 'locație', 'cum ajung', 'harta', 'hartă', 'lunca'],
+      answer: 'Ne găsești la <strong>Drumul Țării 543, Lunca Mureșului, 517405</strong>. Deschide <a href="https://maps.app.goo.gl/A36phLS3wEjMUAt37" target="_blank" rel="noopener">Google Maps</a>.'
+    },
+    {
+      keys: ['telefon', 'whatsapp', 'contact', 'numar', 'număr', 'suna', 'sună'],
+      answer: 'Ne poți contacta rapid la <a href="https://wa.me/40743690435" target="_blank" rel="noopener">0743 690 435</a> (WhatsApp) sau pe email la <a href="mailto:mark.limeco@gmail.com">mark.limeco@gmail.com</a>.'
+    },
+    {
+      keys: ['pret', 'preț', 'cat costa', 'cât costă', 'tarif', 'oferta', 'ofertă'],
+      answer: 'Prețurile depind de tipul mașinii, anvelope și lucrare. Scrie-ne pe WhatsApp sau folosește formularul de pe site pentru o ofertă rapidă.'
+    },
+    {
+      keys: ['servicii', 'ce faceti', 'ce faceți', 'oferiti', 'oferiți'],
+      answer: 'La Limeco facem: montaj anvelope, echilibrare roți, ventile TPMS, depozitare anvelope, vulcanizare și service auto rapid.'
+    },
+    {
+      keys: ['iarna', 'iarnă', 'anvelope iarna', 'cauciucuri iarna', 'cand schimb iarna', 'când schimb iarnă', 'sezon'],
+      answer: 'Recomandat: treci pe anvelope de iarnă când temperaturile scad constant sub ~7°C. Nu aștepta primul viscol — aderența scade și pe uscat, la frig.'
+    },
+    {
+      keys: ['vara', 'vară', 'anvelope vara', 'cauciucuri vara', 'cand schimb vara'],
+      answer: 'Anvelopele de vară se montează când temperaturile stau constant peste ~7°C. Pe caniculă, cauciucul de iarnă se uzează mai repede și frânează mai slab.'
+    },
+    {
+      keys: ['presiune', 'umflat', 'bar', 'psi', 'aer in roti', 'aer în roți'],
+      answer: 'Presiunea corectă e în manualul mașinii sau pe stâlpul ușii șoferului (de obicei 2.2–2.5 bar, dar verifică valorile tale). Controlează anvelopele reci, inclusiv roata de rezervă.'
+    },
+    {
+      keys: ['uzura', 'banda de rulare', 'adancime', 'adâncime', 'mm', 'cand le schimb', 'când le schimb'],
+      answer: 'Legal, minimul e 1,6 mm. Practic, e bine să le schimbi în jur de 3 mm — mai ales iarna — ca să ai frânare și aderență bune pe ud.'
+    },
+    {
+      keys: ['echilibrare', 'vibratie', 'vibrație', 'vibreaza', 'vibrează', 'volan'],
+      answer: 'Dacă volanul vibrează la viteză, de obicei e nevoie de echilibrare. O facem la Limeco pe utilaje profesionale — merită după montaj sau dacă simți vibrații.'
+    },
+    {
+      keys: ['tpms', 'senzor', 'ventil', 'presiune bord', 'martor'],
+      answer: 'TPMS avertizează când presiunea e greșită. După schimb de anvelope, senzorii pot avea nevoie de verificare, înlocuire ventil sau reset. Ne ocupăm și de asta.'
+    },
+    {
+      keys: ['pana', 'pană', 'spart', 'gaurit', 'găurit', 'vulcanizare', 'reparatie anvelopa', 'reparație anvelopă'],
+      answer: 'O pană pe banda de rulare se poate repara adesea prin vulcanizare, dacă deteriorarea nu e pe umăr/flanc. Adu roata la noi și verificăm dacă e sigură de reparat.'
+    },
+    {
+      keys: ['depozitare', 'pastrare', 'păstrare', 'unde tin anvelopele', 'unde țin anvelopele'],
+      answer: 'Anvelopele se păstrează la adăpost, ferite de soare și uleiuri. Dacă nu ai loc, la Limeco oferim și depozitare pentru sezon.'
+    },
+    {
+      keys: ['montaj', 'schimb anvelope', 'schimb cauciucuri', 'demontaj'],
+      answer: 'Facem montaj/demontaj și echilibrare. Ideal, programează-te înainte pe WhatsApp ca să nu aștepți: <a href="https://wa.me/40743690435" target="_blank" rel="noopener">0743 690 435</a>.'
+    },
+    {
+      keys: ['geometrie', 'aliniament', 'directie trage', 'direcție trage', 'roti strambe', 'roți strâmbe'],
+      answer: 'Dacă mașina trage într-o parte sau volanul nu e drept, poate fi geometrie/aliniament. Verifică și presiunea anvelopelor — uneori e cauza. Scrie-ne și îți spunem cum te putem ajuta.'
+    },
+    {
+      keys: ['baterie', 'nu porneste', 'nu pornește', 'descarcata', 'descărcată'],
+      answer: 'Dacă mașina nu pornește, verifică luminile și sunetul la contact. O baterie descărcată e cauza frecventă. Pentru diagnostic, contactează-ne — te orientăm spre intervenția potrivită.'
+    },
+    {
+      keys: ['ulei', 'schimb ulei', 'nivel ulei'],
+      answer: 'Verifică uleiul pe plat, cu motorul oprit și rece/călduț (după manual). Nivelul trebuie între min și max. Pentru service, spune-ne modelul mașinii și ce lucrare vrei.'
+    },
+    {
+      keys: ['frana', 'frână', 'placute', 'plăcuțe', 'scartait', 'scârțâit'],
+      answer: 'Scârțâitul sau pedala moale pot indica plăcuțe/discuri uzate sau aer în sistem. Nu amâna — e siguranță. Scrie-ne ce simți la frânare și te ghidăm.'
+    },
+    {
+      keys: ['multumesc', 'mulțumesc', 'mersi', 'thanks'],
+      answer: 'Cu plăcere! Dacă mai ai nevoie, sunt aici — sau scrie-ne direct pe WhatsApp.'
+    }
+  ];
+
+  var chips = [
+    'Când schimb pe iarnă?',
+    'Ce presiune la roți?',
+    'Unde sunteți?',
+    'Ce servicii oferiți?'
+  ];
+
+  function normalize(text) {
+    return (text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ăâîșț ]/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function replyFor(question) {
+    var q = normalize(question);
+    if (!q) return 'Scrie o întrebare scurtă, de exemplu: „când schimb anvelopele pe iarnă?”.';
+    var best = null;
+    var bestScore = 0;
+    knowledge.forEach(function (item) {
+      var score = 0;
+      item.keys.forEach(function (key) {
+        var k = normalize(key);
+        if (!k) return;
+        if (q === k) score += 6;
+        else if (q.indexOf(k) !== -1) score += 3 + Math.min(k.length, 12) / 12;
+        else {
+          var parts = k.split(' ');
+          var hit = parts.filter(function (p) { return p.length > 2 && q.indexOf(p) !== -1; }).length;
+          if (hit) score += hit;
+        }
+      });
+      if (score > bestScore) {
+        bestScore = score;
+        best = item;
+      }
+    });
+    if (best && bestScore >= 2) return best.answer;
+    return 'Nu sunt sigur pe răspunsul ăsta. Pentru detalii concrete, scrie-ne pe <a href="https://wa.me/40743690435" target="_blank" rel="noopener">WhatsApp 0743 690 435</a> sau lasă un mesaj în formularul de contact — te ajutăm noi.';
+  }
+
+  function addBubble(html, who) {
+    var el = document.createElement('div');
+    el.className = 'agent-bubble ' + who;
+    el.innerHTML = html;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+    return el;
+  }
+
+  function setOpen(open) {
+    panel.classList.toggle('open', open);
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      input.focus();
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+  }
+
+  function renderSuggestions() {
+    suggestions.innerHTML = '';
+    chips.forEach(function (label) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.addEventListener('click', function () {
+        input.value = label;
+        form.requestSubmit();
+      });
+      suggestions.appendChild(btn);
+    });
+  }
+
+  function ask(question) {
+    addBubble(question.replace(/</g, '&lt;'), 'user');
+    var typing = document.createElement('div');
+    typing.className = 'agent-typing';
+    typing.textContent = 'Asistentul scrie…';
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    window.setTimeout(function () {
+      typing.remove();
+      addBubble(replyFor(question), 'bot');
+    }, 350 + Math.min(900, question.length * 12));
+  }
+
+  toggle.addEventListener('click', function () {
+    setOpen(!panel.classList.contains('open'));
+  });
+  closeBtn.addEventListener('click', function () { setOpen(false); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    ask(q);
+  });
+
+  renderSuggestions();
+  addBubble('Salut! Întreabă-mă despre anvelope, presiune, TPMS, vulcanizare sau serviciile Limeco. Răspund în română, pe scurt.', 'bot');
 })();
 </script>
 </body>
